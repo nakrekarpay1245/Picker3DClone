@@ -15,11 +15,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Obstacle
+  - Player
+  - CollectableActive
+  - CollectableDeactive
+  - CollectArea
   - 
   - 
   - 

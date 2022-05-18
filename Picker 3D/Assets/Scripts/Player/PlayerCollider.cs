@@ -16,10 +16,10 @@ public class PlayerCollider : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Platform"))
-        {
-            isGrounded = true;
-        }
+        //if (other.gameObject.CompareTag("Platform"))
+        //{
+        //    isGrounded = true;
+        //}
 
         if (other.gameObject.CompareTag("FinishLine"))
         {
@@ -34,7 +34,10 @@ public class PlayerCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-       
+        if (other.gameObject.layer == 12)
+        {
+            PlayerMovement.playerMovement.CantMove();
+        }
     }
 
     public bool IsPlayerGrounded()

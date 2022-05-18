@@ -5,9 +5,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    private float speed;
+    private float verticalSpeed;
 
-    private float moveSpeed;
+    [SerializeField]
+    private float horizontalSpeed;
+
+    private float verticalMoveSpeed;
+    private float horizontalMoveSpeed;
 
     [Header("Movement Clamps")]
     [SerializeField]
@@ -45,7 +49,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        moveSpeed = speed;
+        horizontalMoveSpeed = horizontalSpeed;
+        verticalMoveSpeed = verticalSpeed;
     }
     private void Update()
     {
@@ -57,33 +62,36 @@ public class PlayerMovement : MonoBehaviour
 
         UserInterfaceManager.userInterfaceManager.ShowProgress(progress);
     }
-    void FixedUpdate()
+
+    private void FixedUpdate()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (canMove)
+        float xMov = 0;
+        float zMov = 1;
+
+        if (IsPlayerCanMove())
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Input.GetKey(KeyCode.Mouse0))
             {
                 if (Physics.Raycast(ray, out RaycastHit raycastHit))
                 {
-                    transform.position = Vector3.Lerp(transform.position,
-                        new Vector3(raycastHit.point.x, transform.position.y, transform.position.z),
-                        Time.deltaTime * 5);
+                    xMov = (raycastHit.point.x - transform.position.x) * 5;
                 }
             }
 
-            rigidbodyComponent.velocity = Vector3.forward * moveSpeed * Time.fixedDeltaTime;
+            rigidbodyComponent.velocity = new Vector3(xMov * horizontalMoveSpeed,
+                rigidbodyComponent.velocity.y, zMov * verticalMoveSpeed);
         }
         else
         {
             rigidbodyComponent.velocity = Vector3.zero;
         }
     }
-
     public void CantMove()
     {
-        //Debug.Log("CantMove");
-        canMove = false;
+        Debug.Log("CantMove");
+        StartCoroutine("CantMoveCoroutine");
+        //canMove = false;
     }
     public void CanMove()
     {
@@ -92,5 +100,13 @@ public class PlayerMovement : MonoBehaviour
     public bool IsPlayerCanMove()
     {
         return canMove;
+    }
+
+    IEnumerator CantMoveCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+        canMove = false;
+        yield return new WaitForSeconds(5);
+        canMove = true;
     }
 }

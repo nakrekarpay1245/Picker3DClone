@@ -89,24 +89,16 @@ public class PlayerMovement : MonoBehaviour
     }
     public void CantMove()
     {
-        Debug.Log("CantMove");
-        StartCoroutine("CantMoveCoroutine");
-        //canMove = false;
+        Debug.Log("CantMove Player");
+        canMove = false;
     }
     public void CanMove()
     {
+        Debug.Log("CanMove Player");
         canMove = true;
     }
     public bool IsPlayerCanMove()
     {
         return canMove;
-    }
-
-    IEnumerator CantMoveCoroutine()
-    {
-        yield return new WaitForSeconds(1);
-        canMove = false;
-        yield return new WaitForSeconds(5);
-        canMove = true;
     }
 }

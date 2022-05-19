@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCollider : MonoBehaviour
 {
     private bool isGrounded;
+
+    public GameObject rotator;
 
     public static PlayerCollider playerCollider;
     private void Awake()
@@ -29,15 +32,32 @@ public class PlayerCollider : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 12)
+        if (other.gameObject.CompareTag("CollectArea"))
         {
-            PlayerMovement.playerMovement.CantMove();
+            UserInterfaceManager.userInterfaceManager.FinishGame();
+            other.gameObject.GetComponent<CollectArea>().Animate();
         }
+
+        if (other.gameObject.CompareTag("RotatorActivator"))
+        {
+            PlayerRotatorSkillActive();
+            Destroy(other.gameObject);
+        }
+
+        if (other.gameObject.CompareTag("Apple"))
+        {
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void PlayerRotatorSkillActive()
+    {
+        rotator.SetActive(true);
     }
 
     public bool IsPlayerGrounded()

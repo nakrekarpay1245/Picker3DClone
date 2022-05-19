@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Platform
   - FinishLine
+  - CollectArea
+  - Apple
+  - RotatorActivator
   layers:
   - Default
   - TransparentFX
@@ -18,9 +21,9 @@ TagManager:
   - Obstacle
   - Player
   - CollectableActive
-  - CollectableDeactive
+  - Floor
   - CollectArea
-  - 
+  - Rotator
   - 
   - 
   - 

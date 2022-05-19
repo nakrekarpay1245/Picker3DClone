@@ -11,6 +11,11 @@ public class CollectArea : MonoBehaviour
 
     public Text collectedCollectableCountText;
 
+    public Animator animator;
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
     public void IncreaseCollectedCollectableCount()
     {
         collectedCollectableCount++;
@@ -20,5 +25,16 @@ public class CollectArea : MonoBehaviour
     private void DisplayCollectedCollectableCount()
     {
         collectedCollectableCountText.text = collectedCollectableCount + " / " + minimumCollectedCollectableCount;
+    }
+
+    public void Animate()
+    {
+        StartCoroutine("AnimateCoroutine");
+    }
+
+    IEnumerator AnimateCoroutine()
+    {
+        yield return new WaitForSeconds(3);
+        animator.SetTrigger("isActive");
     }
 }

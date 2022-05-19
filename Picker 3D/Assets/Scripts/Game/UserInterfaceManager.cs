@@ -23,9 +23,14 @@ public class UserInterfaceManager : MonoBehaviour
     private GameObject tutorial;
     [SerializeField]
     private GameObject resultsMenu;
+    [SerializeField]
+    private GameObject super;
+    [SerializeField]
+    private Animator door;
 
     private int gemPoint;
 
+    bool isGameFinished;
     bool isTouchedTheScreen;
     public static UserInterfaceManager userInterfaceManager;
 
@@ -43,9 +48,6 @@ public class UserInterfaceManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                isTouchedTheScreen = true;
-                tutorial.SetActive(false);
-                countdownText.gameObject.SetActive(true);
                 StartCoroutine(GameStartCoroutine());
             }
         }
@@ -53,6 +55,10 @@ public class UserInterfaceManager : MonoBehaviour
 
     IEnumerator GameStartCoroutine()
     {
+        isTouchedTheScreen = true;
+        tutorial.SetActive(false);
+        countdownText.gameObject.SetActive(true);
+
         countdownText.text = "3";
         yield return new WaitForSeconds(1);
         countdownText.text = "2";
@@ -64,6 +70,31 @@ public class UserInterfaceManager : MonoBehaviour
         yield return new WaitForSeconds(1);
         countdownText.gameObject.SetActive(false);
     }
+
+    IEnumerator GameFinishCoroutine()
+    {
+        isGameFinished = true;
+        yield return new WaitForSeconds(1);
+        PlayerMovement.playerMovement.CantMove();
+        Debug.Log("CantMove");
+        yield return new WaitForSeconds(3);
+        door.SetTrigger("isActive");
+        Debug.Log("doorActive");
+        super.SetActive(true);
+        Debug.Log("Super");
+        yield return new WaitForSeconds(0.25f);
+        PlayerMovement.playerMovement.CanMove();
+        Debug.Log("CanMove");
+        yield return new WaitForSeconds(1);
+        super.SetActive(false);
+        yield return new WaitForSeconds(4);
+        PlayerMovement.playerMovement.CantMove();
+        Debug.Log("CantMove");
+        yield return new WaitForSeconds(1);
+        resultsMenu.SetActive(true);
+        Debug.Log("Results");
+    }
+
     public void IncreaseGemPoint()
     {
         gemPoint++;
@@ -84,13 +115,25 @@ public class UserInterfaceManager : MonoBehaviour
     {
         progressSlider.gameObject.SetActive(false);
     }
+
     public void ShowProgress(float progress)
     {
-        progressSlider.value = progress;
+        if (progress < 1)
+        {
+            progressSlider.value = progress;
+        }
     }
 
     public void ShowResults()
     {
         resultsMenu.SetActive(true);
+    }
+
+    public void FinishGame()
+    {
+        if (!isGameFinished)
+        {
+            StartCoroutine("GameFinishCoroutine");
+        }
     }
 }

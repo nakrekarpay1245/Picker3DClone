@@ -8,6 +8,7 @@ public class PlayerCollider : MonoBehaviour
     private bool isGrounded;
 
     public GameObject rotator;
+    public GameObject[] rotators;
 
     public static PlayerCollider playerCollider;
     private void Awake()
@@ -17,22 +18,13 @@ public class PlayerCollider : MonoBehaviour
             playerCollider = this;
         }
     }
+
     private void OnCollisionEnter(Collision other)
     {
-        //if (other.gameObject.CompareTag("Platform"))
-        //{
-        //    isGrounded = true;
-        //}
-
         if (other.gameObject.CompareTag("FinishLine"))
         {
             UserInterfaceManager.userInterfaceManager.HideInGameUI();
         }
-    }
-
-    private void OnCollisionStay(Collision other)
-    {
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -63,5 +55,13 @@ public class PlayerCollider : MonoBehaviour
     public bool IsPlayerGrounded()
     {
         return isGrounded;
+    }
+
+    public void ChangeRotatorLayer()
+    {
+        foreach (GameObject peace in rotators)
+        {
+            peace.gameObject.layer = 11;
+        }
     }
 }

@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class PlayerCollider : MonoBehaviour
 {
-    private bool isGrounded;
-
     public GameObject rotator;
-    public GameObject[] rotators;
 
     public static PlayerCollider playerCollider;
     private void Awake()
@@ -32,36 +29,23 @@ public class PlayerCollider : MonoBehaviour
         if (other.gameObject.CompareTag("CollectArea"))
         {
             UserInterfaceManager.userInterfaceManager.FinishGame();
+            UserInterfaceManager.userInterfaceManager.IsGameCompleted(other.gameObject.GetComponent<CollectArea>().IsGameCompleted());
             other.gameObject.GetComponent<CollectArea>().Animate();
         }
 
         if (other.gameObject.CompareTag("RotatorActivator"))
         {
-            PlayerRotatorSkillActive();
-            Destroy(other.gameObject);
-        }
-
-        if (other.gameObject.CompareTag("Apple"))
-        {
+            PlayerRotatorActive();
             Destroy(other.gameObject);
         }
     }
 
-    private void PlayerRotatorSkillActive()
+    public void PlayerRotatorActive()
     {
         rotator.SetActive(true);
     }
-
-    public bool IsPlayerGrounded()
+    public void PlayerRotatorDeactive()
     {
-        return isGrounded;
-    }
-
-    public void ChangeRotatorLayer()
-    {
-        foreach (GameObject peace in rotators)
-        {
-            peace.gameObject.layer = 11;
-        }
+        rotator.SetActive(false);
     }
 }

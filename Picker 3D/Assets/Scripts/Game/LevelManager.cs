@@ -16,8 +16,15 @@ public class LevelManager : MonoBehaviour
     {
         SceneManager.LoadScene(index);
     }
+
     public void SceneChanger(string name)
     {
         SceneManager.LoadScene(name);
+    }
+
+    // There is no quit button but this function is really necessary!
+    public void Quit()
+    {
+        Application.Quit();
     }
 }

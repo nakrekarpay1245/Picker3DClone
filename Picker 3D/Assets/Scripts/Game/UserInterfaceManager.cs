@@ -6,20 +6,17 @@ using UnityEngine.UI;
 using DG.Tweening;
 public class UserInterfaceManager : MonoBehaviour
 {
-    [Header("Images")]
-
     [Header("Sliders")]
     [SerializeField]
     private Slider progressSlider;
 
     [Header("Texts")]
     [SerializeField]
-    private Text gemPointText;
-    [SerializeField]
     private Text countdownText;
-    /// <summary>
-    /// LEVEL TEXT GEM POINT
-    /// </summary>
+    [SerializeField]
+    private Text currentLevelText;
+    [SerializeField]
+    private Text nextLevelText;
 
     [Header("Objects")]
     [SerializeField]
@@ -29,14 +26,25 @@ public class UserInterfaceManager : MonoBehaviour
     [SerializeField]
     private GameObject resultsMenu;
     [SerializeField]
+    private GameObject retryButton;
+    [SerializeField]
+    private GameObject nextButton;
+    [SerializeField]
+    private GameObject goodJob;
+    [SerializeField]
+    private GameObject levelFailed;
+    [SerializeField]
     private GameObject super;
     [SerializeField]
+    private GameObject fail;
+    [SerializeField]
     private GameObject door;
-
-    private int gemPoint;
+    [SerializeField]
+    private GameObject collectableLeaver;
 
     bool isGameFinished;
     bool isTouchedTheScreen;
+    bool isGameCompleted;
 
     public static UserInterfaceManager userInterfaceManager;
     private void Awake()
@@ -46,6 +54,11 @@ public class UserInterfaceManager : MonoBehaviour
             userInterfaceManager = this;
         }
         StartCoroutine(TutorialEffectsCoroutine());
+    }
+    private void Start()
+    {
+        currentLevelText.text = (SaveAndLoadManager.saveAndLoadManager.GetLevelNumber() + 1).ToString();
+        nextLevelText.text = (SaveAndLoadManager.saveAndLoadManager.GetLevelNumber() + 2).ToString();
     }
 
     void Update()
@@ -84,6 +97,10 @@ public class UserInterfaceManager : MonoBehaviour
 
         countdownText.text = "Start";
         CountDownEffect();
+        if (collectableLeaver)
+        {
+            collectableLeaver.SetActive(true);
+        }
         PlayerMovement.playerMovement.CanMove();
         yield return new WaitForSeconds(1);
     }
@@ -91,50 +108,40 @@ public class UserInterfaceManager : MonoBehaviour
     IEnumerator GameFinishCoroutine()
     {
         isGameFinished = true;
-        PlayerCollider.playerCollider.ChangeRotatorLayer();
+        PlayerCollider.playerCollider.PlayerRotatorDeactive();
         yield return new WaitForSeconds(1);
 
         PlayerMovement.playerMovement.CantMove();
         //Debug.Log("CantMove");
-        yield return new WaitForSeconds(3);
+        if (isGameCompleted)
+        {
+            yield return new WaitForSeconds(3);
+            //door.SetTrigger("isActive");
+            DoorEffect();
+            //Debug.Log("doorActive");
+            SuperEffect();
+            //Debug.Log("Super");
+            yield return new WaitForSeconds(0.25f);
 
-        //door.SetTrigger("isActive");
-        DoorEffect();
-        //Debug.Log("doorActive");
-        SuperEffect();
-        //Debug.Log("Super");
-        yield return new WaitForSeconds(0.25f);
+            PlayerMovement.playerMovement.CanMove();
+            //Debug.Log("CanMove");
+            yield return new WaitForSeconds(5);
 
-        PlayerMovement.playerMovement.CanMove();
-        //Debug.Log("CanMove");
-        yield return new WaitForSeconds(5);
-
-        PlayerMovement.playerMovement.CantMove();
-        //Debug.Log("CantMove");
+            PlayerMovement.playerMovement.CantMove();
+            SaveAndLoadManager.saveAndLoadManager.SaveGame(
+           (SaveAndLoadManager.saveAndLoadManager.GetLevelNumber() + 1));
+            //Debug.Log("CantMove");
+        }
+        else
+        {
+            yield return new WaitForSeconds(1);
+            FailEffect();
+            //Debug.Log("Fail");
+        }
         yield return new WaitForSeconds(1);
-
-        SaveAndLoadManager.saveAndLoadManager.SaveGame(
-            (SaveAndLoadManager.saveAndLoadManager.GetLevelNumber() + 1),
-            SaveAndLoadManager.saveAndLoadManager.GetGemPoint() + gemPoint);
 
         ShowResults();
         //Debug.Log("Results");
-    }
-
-    public void IncreaseGemPoint()
-    {
-        gemPoint++;
-        ShowGemPoint();
-    }
-
-    private void ShowGemPoint()
-    {
-        gemPointText.text = gemPoint.ToString();
-    }
-
-    public int GetGemPoint()
-    {
-        return gemPoint;
     }
 
     public void HideInGameUI()
@@ -152,13 +159,38 @@ public class UserInterfaceManager : MonoBehaviour
 
     public void ShowResults()
     {
+        if (isGameCompleted)
+        {
+            retryButton.SetActive(false);
+            nextButton.SetActive(true);
+            levelFailed.SetActive(false);
+            goodJob.SetActive(true);
+        }
+        else if (!isGameCompleted)
+        {
+            retryButton.SetActive(true);
+            nextButton.SetActive(false);
+            levelFailed.SetActive(true);
+            goodJob.SetActive(false);
+        }
         resultsMenu.transform.DOScale(Vector3.one, 1);
+    }
+
+    public void IsGameCompleted(bool value)
+    {
+        isGameCompleted = value;
     }
 
     public void SuperEffect()
     {
         super.transform.DOScale(Vector3.one, 1).OnComplete(() =>
         super.transform.DOScale(Vector3.zero, 1));
+    }
+
+    public void FailEffect()
+    {
+        fail.transform.DOScale(Vector3.one, 1).OnComplete(() =>
+        fail.transform.DOScale(Vector3.zero, 1));
     }
 
     public void CountDownEffect()

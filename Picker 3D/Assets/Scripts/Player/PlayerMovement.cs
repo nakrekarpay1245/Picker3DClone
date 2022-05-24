@@ -66,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         float xMov = 0;
-        float zMov = 1;
 
         if (IsPlayerCanMove())
         {
@@ -80,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             rigidbodyComponent.velocity = new Vector3(xMov * horizontalMoveSpeed,
-                rigidbodyComponent.velocity.y, zMov * verticalMoveSpeed);
+                rigidbodyComponent.velocity.y, verticalMoveSpeed);
         }
         else
         {
@@ -89,12 +88,12 @@ public class PlayerMovement : MonoBehaviour
     }
     public void CantMove()
     {
-        Debug.Log("CantMove Player");
+        //Debug.Log("CantMove Player");
         canMove = false;
     }
     public void CanMove()
     {
-        Debug.Log("CanMove Player");
+        //Debug.Log("CanMove Player");
         canMove = true;
     }
     public bool IsPlayerCanMove()

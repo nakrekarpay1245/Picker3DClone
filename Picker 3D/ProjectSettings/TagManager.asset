@@ -20,10 +20,10 @@ TagManager:
   - 
   - Obstacle
   - Player
-  - CollectableActive
+  - Collectable
   - Floor
-  - CollectArea
-  - Rotator
+  - 
+  - 
   - 
   - 
   - 

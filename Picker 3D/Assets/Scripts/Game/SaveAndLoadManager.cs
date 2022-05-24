@@ -5,7 +5,6 @@ using UnityEngine;
 public class SaveAndLoadManager : MonoBehaviour
 {
     private int levelNumber;
-    private int totalGemPoint;
 
     public static SaveAndLoadManager saveAndLoadManager;
     private void Awake()
@@ -15,18 +14,27 @@ public class SaveAndLoadManager : MonoBehaviour
             saveAndLoadManager = this;
         }
     }
-    public void SaveGame(int levelNumber, int totalGemPoint)
+#if UNITY_EDITOR
+    private void Update()
+    {        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetGame();
+        }
+    }
+    public void ResetGame()
+    {
+        PlayerPrefs.SetInt("levelNumber", 0);
+        //Debug.LogWarning("The game is resetted");
+    }
+#endif
+    public void SaveGame(int levelNumber)
     {
         PlayerPrefs.SetInt("levelNumber", levelNumber);
-        PlayerPrefs.SetInt("totalGemPoint", totalGemPoint);
     }
 
     public int GetLevelNumber()
     {
-        return PlayerPrefs.GetInt("levelNumber");
-    }
-    public int GetGemPoint()
-    {
-        return PlayerPrefs.GetInt("gemPoint");
+        return (PlayerPrefs.GetInt("levelNumber"));
     }
 }
